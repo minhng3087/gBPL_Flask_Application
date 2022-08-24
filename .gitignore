@@ -1,3 +1,5 @@
 /migrations/*
-/__pycache__/*
+/__pycache__/
 demo.db
+app/__pycache__/
+venv/

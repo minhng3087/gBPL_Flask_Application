@@ -1,6 +1,6 @@
 flask
 flask-wtf
-flask-sqlachemy
+flask-sqlalchemy
 flask-migrate
 flask-login
 email_validator
