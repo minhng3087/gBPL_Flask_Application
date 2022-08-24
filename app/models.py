@@ -28,7 +28,6 @@ class User(db.Model):
         backref=db.backref('users', lazy=True))
     reviewed = db.relationship('Review', secondary=restaurant_dish, lazy='subquery',
         backref=db.backref('users', lazy=True))
-    
     # class constructor
     def __init__(self, data):
         """
@@ -44,6 +43,6 @@ class User(db.Model):
         pwhash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
         return pwhash.decode('utf8')        
 
-    def check_hash(self, password):
-        return bcrypt.checkpw(self.password.encode('utf8'), password.encode('utf8'))
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode('utf8'), self.password.encode('utf8'))
 
