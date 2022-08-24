@@ -6,8 +6,14 @@ from flask import Flask
 
 from app import db
 
-
-
+restaurant_dish = db.Table('reviews',
+    db.Column('reviewer_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('reviewed_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('content',db.String(256)),
+    db.Column('score',db.Integer),
+    db.Column('created_at', db.DateTime),
+    db.Column('modified_at', db.DateTime),
+ )
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -18,8 +24,10 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime)
     modified_at = db.Column(db.DateTime)
-   
-
+    reviewers = db.relationship('Review', secondary=restaurant_dish, lazy='subquery',
+        backref=db.backref('users', lazy=True))
+    reviewed = db.relationship('Review', secondary=restaurant_dish, lazy='subquery',
+        backref=db.backref('users', lazy=True))
     # class constructor
     def __init__(self, data):
         """
@@ -36,6 +44,5 @@ class User(db.Model):
         return pwhash.decode('utf8')        
 
     def check_password(self, password):
-        return bcrypt.checkpw(self.password.encode('utf8'), password.encode('utf8'))
-     
+        return bcrypt.checkpw(password.encode('utf8'), self.password.encode('utf8'))
 
