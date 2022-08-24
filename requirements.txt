@@ -5,4 +5,5 @@ flask-migrate
 flask-login
 email_validator
 bcrypt
-psycopg2-binary
+psycopg2
+python-dotenv

@@ -1,6 +1,7 @@
-/migrations/*
+/migrations/
 /__pycache__/
 demo.db
 app/__pycache__/
 venv/
 demo.db
+.env
