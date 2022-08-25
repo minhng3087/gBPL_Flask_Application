@@ -12,7 +12,16 @@ class Review(db.Model):
     content = db.Column(db.String(256))
     score = db.Column(db.Integer)
     created_at = db.Column(db.DateTime)
-    modified_at = db.Column(db.DateTime)
+
+    def __init__(self, data):
+        """
+        Class constructor
+        """
+        self.fk_user_from = data.get('user_from')
+        self.fk_user_to = data.get('user_to')
+        self.content = data.get('content')
+        self.score = data.get("score")
+        self.created_at = datetime.datetime.utcnow()
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'

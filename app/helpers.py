@@ -9,4 +9,3 @@ def generate_hash(password):
 
 def user_susume():
     pass
-
