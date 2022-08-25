@@ -48,6 +48,14 @@ class User(UserMixin, db.Model):
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
 
+    def selialize(self):
+        return {
+            'name': self.name,
+            'email': self.email,
+        }
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+

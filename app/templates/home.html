@@ -1,6 +1,207 @@
-{% extends "__header.html" %}
+{% extends "base.html" %}
 {% block content %}
-<h1>
-    Homepage
-</h1>
+<!-- Card -->
+<div class="row p-5">
+    <div class="col-4">
+        <div class="card">
+            <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a
+                        class="nav-link active"
+                        id="ex3-tab-1"
+                        data-mdb-toggle="tab"
+                        href="#ex3-tabs-1"
+                        role="tab"
+                        aria-controls="ex3-tabs-1"
+                        aria-selected="true"
+                        >
+                    Link
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a
+                        class="nav-link"
+                        id="ex3-tab-2"
+                        data-mdb-toggle="tab"
+                        href="#ex3-tabs-2"
+                        role="tab"
+                        aria-controls="ex3-tabs-2"
+                        aria-selected="false"
+                    >
+                    Very very 
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a
+                        class="nav-link"
+                        id="ex3-tab-3"
+                        data-mdb-toggle="tab"
+                        href="#ex3-tabs-3"
+                        role="tab"
+                        aria-controls="ex3-tabs-3"
+                        aria-selected="false"
+                        >Another link</a
+                    >
+                </li>
+            </ul>
+            <div class="tab-content" id="ex2-content">
+                <div
+                  class="tab-pane fade show active"
+                  id="ex3-tabs-1"
+                  role="tabpanel"
+                  aria-labelledby="ex3-tab-1"
+                >
+                    <div class="list-group-item d-flex align-items-center">
+                        <p class="mb-0 d-flex">
+                        <img
+                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            class="rounded-circle"
+                            height="40"
+                            alt="Black and White Portrait of a Man"
+                            loading="lazy"
+                        />
+                        <div class="d-flex flex-column ps-2">
+                            <div>
+                                Tab1
+                            </div>
+                        </div>
+                        <div class="ms-auto">
+                            <button class="btn btn-primary">
+                                Chat
+                            </button>
+                        </div>
+                        </p>
+                    </div>
+                </div>
+                <div
+                  class="tab-pane fade"
+                  id="ex3-tabs-2"
+                  role="tabpanel"
+                  aria-labelledby="ex3-tab-2"
+                >
+                    <div class="list-group-item d-flex align-items-center">
+                        <p class="mb-0 d-flex">
+                        <img
+                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            class="rounded-circle"
+                            height="40"
+                            alt="Black and White Portrait of a Man"
+                            loading="lazy"
+                        />
+                        <div class="d-flex flex-column ps-2">
+                            <div>
+                                Tab2
+                            </div>
+                        </div>
+                        <div class="ms-auto">
+                            <button class="btn btn-primary">
+                                Chat
+                            </button>
+                        </div>
+                        </p>
+                    </div>
+                </div>
+                <div
+                  class="tab-pane fade"
+                  id="ex3-tabs-3"
+                  role="tabpanel"
+                  aria-labelledby="ex3-tab-3"
+                >
+                    <div class="list-group-item d-flex align-items-center">
+                        <p class="mb-0 d-flex">
+                        <img
+                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            class="rounded-circle"
+                            height="40"
+                            alt="Black and White Portrait of a Man"
+                            loading="lazy"
+                        />
+                        <div class="d-flex flex-column ps-2">
+                            <div>
+                                Tab3
+                            </div>
+                        </div>
+                        <div class="ms-auto">
+                            <button class="btn btn-primary">
+                                Chat
+                            </button>
+                        </div>
+                        </p>
+                    </div>
+                </div>
+              </div>
+              <!-- Tabs content -->
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="card">
+            <!-- Card content -->
+            <div class="card-body">
+                <div class="input-group md-form form-md form-2 pl-0">
+                    <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search" id="search_text">
+                    <div class="input-group-append">
+                      <span class="input-group-text lime lighten-2" id="basic-text1"><i class="fas fa-search text-grey"
+                          aria-hidden="true"></i></span>
+                    </div>
+                </div>
+              <!-- Text -->
+              <p class="card-text">
+                <div class="list-group-flush" id="result-search-user">
+                    {% for user in users %}
+                    <div class="list-group-item d-flex align-items-center">
+                      <p class="mb-0 d-flex">
+                        <img
+                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            class="rounded-circle"
+                            height="40"
+                            alt="Black and White Portrait of a Man"
+                            loading="lazy"
+                        />
+                        <div class="d-flex flex-column ps-2">
+                            <div>
+                                {{ user.name }} || {{ user.email }}
+                            </div>
+                            <div>
+                                descriptor
+                            </div>
+                        </div>
+                        <div class="ms-auto">
+                            <button class="btn btn-primary">
+                                Chat
+                            </button>
+                        </div>
+                      </p>
+                    </div>
+                    {% endfor %}
+              </p>
+              <!-- Button -->
+            </div>
+          
+        </div>
+    </div>
+
+</div>
+  <!-- Card -->
+<script type="text/javascript">
+    $(document).ready(function(){
+        function load_data(query){
+            $.ajax({
+                url: 'search/users',
+                method:"POST",
+                data: {"query":query},
+                success:function(data){
+                    $('#result-search-user').html(data);
+                }
+            });
+        }
+        $('#search_text').keyup(function(){
+            var search = $(this).val();
+            if(search != ''){
+                load_data(search);
+            }else{
+                load_data('');
+            }
+        });
+    })
+</script>
 {% endblock %}
