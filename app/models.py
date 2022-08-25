@@ -1,4 +1,5 @@
 import datetime
+from hashlib import md5
 import bcrypt
 from app import login
 from app import db
@@ -41,6 +42,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf8'), self.password.encode('utf8'))
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
 
 @login.user_loader
 def load_user(id):

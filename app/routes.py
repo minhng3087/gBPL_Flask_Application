@@ -61,3 +61,14 @@ def signup():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/profile')
+def profile():
+    user = current_user
+    
+    return render_template("profile.html", title="Profile", user=user)
+
+@app.route("/chat", methods=["GET", "POST"])
+def chat():
+    pass
+
