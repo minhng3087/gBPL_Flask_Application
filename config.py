@@ -9,6 +9,7 @@ class Config(object):
     password = os.environ.get("DATABASE_PASSWORD")
     port = os.environ.get("DATABASE_PORT")
     dbname = os.environ.get("DATABASE_NAME")
+    print(port)
     SQLALCHEMY_DATABASE_URI = f"postgresql://{username}:{password}@localhost:{port}/{dbname}"
     print(SQLALCHEMY_DATABASE_URI)
     # 'postgresql://postgres:17071608@localhost:5432/FlaskApp'

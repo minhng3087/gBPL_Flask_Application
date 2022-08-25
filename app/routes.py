@@ -14,11 +14,17 @@ from app.helpers import *
 
 @app.route('/')
 def index():
-    return {200:"OK"}
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('login'))
 
-@app.route('/index')
+@app.route('/home')
 def home():
-    return render_template('home.html', title='Home')
+    if current_user.is_authenticated:
+        return render_template('home.html', title='Home')
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -28,10 +34,10 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not bcrypt.checkpw(form.password.data.encode('utf8'), user.password.encode('utf8')):
-            flash("Email/Password is invalid.")
+            flash("Email/Password is invalid.", 'danger')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect('/index')
+        return redirect('/home')
     return render_template('login.html', title='Log In', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -49,12 +55,12 @@ def signup():
             db.session.commit()
         except Exception:
             db.session.rollback()
-            flash("The email is existed. Please use another email.")
+            flash("The email is existed. Please use another email.", 'danger')
             return redirect(url_for('signup'))
 
-        flash('Congratulations, you are now a registered user!')
+        flash('Congratulations, you are now a registered user!', 'success')
         return redirect(url_for('login'))
-    return render_template('signup.html', title='Add new user', form=form)
+    return render_template('signup.html', title='Sign up', form=form)
 
  
 @app.route('/logout')
