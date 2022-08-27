@@ -7,3 +7,4 @@ email_validator
 bcrypt
 psycopg2
 python-dotenv
+flask-db

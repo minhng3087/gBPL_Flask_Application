@@ -7,21 +7,30 @@ from flask_login import UserMixin
 
 class Review(db.Model):
     __tablename__ = 'reviews'
+
     fk_user_from = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     fk_user_to = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     content = db.Column(db.String(256))
     score = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, primary_key=True)
 
     def __init__(self, data):
         """
         Class constructor
         """
-        self.fk_user_from = data.get('user_from')
-        self.fk_user_to = data.get('user_to')
+        self.fk_user_from = data.get('fk_user_from')
+        self.fk_user_to = data.get('fk_user_to')
         self.content = data.get('content')
         self.score = data.get("score")
         self.created_at = datetime.datetime.utcnow()
+    
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(e)
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -57,11 +66,30 @@ class User(UserMixin, db.Model):
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
 
+
     def selialize(self):
         return {
             'name': self.name,
             'email': self.email,
         }
+
+    @classmethod
+    def seed(cls, fake):
+        user = User(
+            name = fake.name(),
+            email = fake.email(),
+            password = cls.__set_password(fake.password()),
+        )
+        user.save()
+
+    
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(e)
 
 @login.user_loader
 def load_user(id):

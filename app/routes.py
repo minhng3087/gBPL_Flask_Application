@@ -12,18 +12,23 @@ from app import app
 from app.models import *
 from app.helpers import *
 
+
+@app.route('/')
+def index():
+    return {200: "OK"}
+
 @app.route('/home')
 def home():
     if current_user.is_authenticated:
         users = User.query.filter(User.id != current_user.id).all()
-        return render_template('home.html', title='Home', users=users)
+        return render_template('home.html', title='Home', user=current_user)
     else:
         return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -31,7 +36,7 @@ def login():
             flash("Email/Password is invalid.", 'danger')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect('/home')
+        return redirect(url_for('home'))
     return render_template('login.html', title='Log In', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -82,3 +87,16 @@ def search_users():
         # print(users)
     # return jsonify([user.selialize() for user in users])
     return render_template('components/user-home.html', users=[user.selialize() for user in users])
+
+from app.seeds import create_data
+@app.route("/seed")
+def seed_data():
+    create_data()
+    return redirect('/')
+
+
+@app.route("/susume/users", methods=["GET", "POST"])
+def susume_users():
+
+    user = the_most_setsuzoku_user(3)
+    return {200: "1"}
