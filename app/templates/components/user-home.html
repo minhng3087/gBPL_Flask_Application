@@ -1,0 +1,28 @@
+{% if users %}
+{% for user in users %}
+<div class="list-group-item d-flex align-items-center">
+    <p class="mb-0 d-flex">
+      <img
+          src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+          class="rounded-circle"
+          height="40"
+          alt="Black and White Portrait of a Man"
+          loading="lazy"
+      />
+      <div class="d-flex flex-column ps-2">
+          <div>
+              {{ user.name }} || {{ user.email }}
+          </div>
+          <div>
+              descriptor
+          </div>
+      </div>
+      <div class="ms-auto">
+          <button class="btn btn-primary">
+              Chat
+          </button>
+      </div>
+    </p>
+  </div>
+{% endfor %}
+{% endif %}

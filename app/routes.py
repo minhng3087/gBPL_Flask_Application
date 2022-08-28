@@ -12,17 +12,11 @@ from app import app
 from app.models import *
 from app.helpers import *
 
-@app.route('/')
-def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    else:
-        return redirect(url_for('login'))
-
 @app.route('/home')
 def home():
     if current_user.is_authenticated:
-        return render_template('home.html', title='Home')
+        users = User.query.filter(User.id != current_user.id).all()
+        return render_template('home.html', title='Home', users=users)
     else:
         return redirect(url_for('login'))
 
@@ -78,3 +72,13 @@ def profile():
 def chat():
     pass
 
+@app.route('/search/users', methods=["GET", "POST"])
+def search_users():
+    if request.method == 'POST':
+        search_word = request.form['query']
+        search = "%{}%".format(search_word)
+        print(search)
+        users = User.query.filter(User.name.like(search)).filter(User.id != current_user.id).all()
+        # print(users)
+    # return jsonify([user.selialize() for user in users])
+    return render_template('components/user-home.html', users=[user.selialize() for user in users])
