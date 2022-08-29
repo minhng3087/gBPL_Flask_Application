@@ -8,26 +8,33 @@ from flask import flash
 from flask import url_for
 from flask import session
 from flask_login import current_user, login_user, logout_user
+from flask import session
 
 from app.forms import *
 from app import app
 from app.models import *
 from app.helpers import *
-from sqlalchemy.sql import func
+
+from app import online_users
 
 @app.route('/')
 def index():
     return {200: "OK"}
 @app.route('/home')
 def home():
+    print("Online user: ",online_users)
     if current_user.is_authenticated:
         users = User.query.filter(User.id != current_user.id).all()
         users_most_connect = the_most_setsuzoku_user(current_user.id)
         users_last_connect = last_setsuzoku_user(current_user.id)
-        return render_template('home.html', title='Home', user=current_user, users=users,
-                               users_most_connect=users_most_connect, users_last_connect=users_last_connect)
-    else:
-        return redirect(url_for('login'))
+
+        return render_template('home.html', title='Home', 
+                                user=current_user, users=users, 
+                                users_most_connect=users_most_connect, 
+                                users_last_connect=users_last_connect,
+                                online_users=online_users
+        )
+    return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -40,6 +47,10 @@ def login():
         if user is None or not bcrypt.checkpw(form.password.data.encode('utf8'), user.password.encode('utf8')):
             flash("Email/Password is invalid.", 'danger')
             return redirect(url_for('login'))
+
+        global online_users 
+        online_users.append(user)
+        print(online_users)
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('home'))
     return render_template('login.html', title='Log In', form=form)
@@ -70,7 +81,10 @@ def signup():
 
 @app.route('/logout')
 def logout():
+    global online_users 
+    online_users = [u for u in online_users if u.id != current_user.id]
     logout_user()
+    session.clear()
     return redirect(url_for('login'))
 
 @app.route('/profile')
@@ -83,6 +97,7 @@ def profile():
         average = round(average)
 
     return render_template("profile.html", title="Profile", user=user, average=average)
+
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
 def profile_edit():
@@ -108,11 +123,6 @@ def profile_edit():
 
     return render_template("edit_profile.html", title="Profile Edit", user=user, hobbies=hobbies)
 
-@app.route("/chat", methods=["GET", "POST"])
-def chat():
-    pass
-
-
 @app.route('/search/users', methods=["GET", "POST"])
 def search_users():
     if request.method == 'POST':
@@ -121,7 +131,20 @@ def search_users():
         users = User.query.filter(User.name.like(search)).filter(User.id != current_user.id).all()
     return render_template('components/user-home.html', users=[user.selialize() for user in users])
 
+@app.route("/chatroom/<int:to_id>", methods=['GET', 'POST'])
+def request_chat(to_id):
+    from_id = current_user.id
+    print(from_id, to_id)
+    return render_template("chat.html", title="Chat")
 
+
+######################  CHAT  ####################################
+
+
+
+
+###########################################################
+from app.seeds import create_data
 @app.route("/seed")
 def seed_data():
     create_data()

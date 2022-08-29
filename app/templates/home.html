@@ -136,11 +136,22 @@
                                 <span class="fs-6">{{ user.department if user.department is not none }}</span>
                             </div>
                         </div>
+                        {% if user in online_users %}
                         <div class="ms-auto">
-                            <button class="btn btn-primary">
-                                Chat
+                            <a href="{{ url_for('request_chat',to_id=user.id) }}">
+                                <button class="btn btn-primary"  >
+                                    Chat
+                                </button>
+                            </a>
+                            
+                        </div>
+                        {% else %}
+                        <div class="ms-auto">
+                            <button class="btn btn-primary" style="background: rgb(169, 167, 175)">
+                                Not online
                             </button>
                         </div>
+                        {% endif %}
                       </p>
                     </div>
                     {% endfor %}
@@ -154,6 +165,7 @@
 </div>
   <!-- Card -->
 <script type="text/javascript">
+
     $(document).ready(function(){
         function load_data(query){
             $.ajax({

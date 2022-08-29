@@ -12,6 +12,8 @@ login = LoginManager(app)
 socket_app = SocketIO(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
- 
+
+online_users = []
+
 from app import routes
 from app import models
