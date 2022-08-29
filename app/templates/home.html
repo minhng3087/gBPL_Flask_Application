@@ -15,7 +15,7 @@
                         aria-controls="ex3-tabs-1"
                         aria-selected="true"
                         >
-                    Link
+                    The most connected users
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -28,7 +28,7 @@
                         aria-controls="ex3-tabs-2"
                         aria-selected="false"
                     >
-                    Very very 
+                    Last connected users
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -50,7 +50,7 @@
                   id="ex3-tabs-1"
                   role="tabpanel"
                   aria-labelledby="ex3-tab-1"
-                >
+                >{% for user in users_most_connect %}
                     <div class="list-group-item d-flex align-items-center">
                         <p class="mb-0 d-flex">
                         <img
@@ -60,9 +60,13 @@
                             alt="Black and White Portrait of a Man"
                             loading="lazy"
                         />
+                        
                         <div class="d-flex flex-column ps-2">
                             <div>
-                                Tab1
+                                {{ user[0].name}}
+                            </div>
+                            <div style="color: rgb(143, 143, 143);"> 
+                                Connect {{ user[1] }} times
                             </div>
                         </div>
                         <div class="ms-auto">
@@ -72,13 +76,14 @@
                         </div>
                         </p>
                     </div>
+                    {% endfor %}
                 </div>
                 <div
                   class="tab-pane fade"
                   id="ex3-tabs-2"
                   role="tabpanel"
                   aria-labelledby="ex3-tab-2"
-                >
+                >{% for user in users_last_connect %}
                     <div class="list-group-item d-flex align-items-center">
                         <p class="mb-0 d-flex">
                         <img
@@ -90,9 +95,13 @@
                         />
                         <div class="d-flex flex-column ps-2">
                             <div>
-                                Tab2
+                                {{ user[0].name}}
                             </div>
+                            <div style="color: rgb(151, 150, 150)">
+                                Last connect: {{ user[1]}}
+                            </div> 
                         </div>
+                        
                         <div class="ms-auto">
                             <button class="btn btn-primary">
                                 Chat
@@ -100,6 +109,7 @@
                         </div>
                         </p>
                     </div>
+                    {% endfor %}
                 </div>
                 <div
                   class="tab-pane fade"
@@ -182,6 +192,7 @@
 
 </div>
   <!-- Card -->
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         function load_data(query){
@@ -204,4 +215,5 @@
         });
     })
 </script>
+
 {% endblock %}

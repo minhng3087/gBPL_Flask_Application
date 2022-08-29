@@ -21,7 +21,10 @@ def index():
 def home():
     if current_user.is_authenticated:
         users = User.query.filter(User.id != current_user.id).all()
-        return render_template('home.html', title='Home', user=current_user)
+        users_most_connect = the_most_setsuzoku_user(current_user.id)
+        users_last_connect = last_setsuzoku_user(current_user.id)
+        return render_template('home.html', title='Home', user=current_user, users=users, 
+        users_most_connect=users_most_connect, users_last_connect=users_last_connect)
     else:
         return redirect(url_for('login'))
 
@@ -93,10 +96,3 @@ from app.seeds import create_data
 def seed_data():
     create_data()
     return redirect('/')
-
-
-@app.route("/susume/users", methods=["GET", "POST"])
-def susume_users():
-
-    user = the_most_setsuzoku_user(3)
-    return {200: "1"}
