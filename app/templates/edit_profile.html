@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <form method="POST" action="{{ url_for('profile_edit') }}" enctype="multipart/form-data">
+        <div class="row mb-4">
+            <div class="col-3 d-flex justify-content-center align-items-center flex-column">
+                <!-- <img src="{{ url_for('static', filename='images/avatar-default.png') }}" class="rounded-circle" style="width: 150px;"
+                alt="Avatar" /> -->
+                <img id="avatar" src="{{ current_user.icon if current_user.icon is not none else url_for('static', filename='images/avatar-default.png') }}" class="rounded-circle" alt="avatar" style="width: 150px;">
+                <h6 class="mt-1">Upload a different photo...</h6>
+                <input type="text" id="image" name="icon" style="display:none;" value="{{ current_user.icon }}"></p>
+                <input id="my_file" type="file" class="d-none" />
+            </div>
+            <div class="col-9">
+                <div class="form-outline mb-4">
+                    <input type="text" id="form6Example3" class="form-control" name="name" value="{{ current_user.name }}"/>
+                    <label class="form-label" for="form6Example3">Username</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <input type="email" name="email" id="form6Example4" class="form-control" value="{{ current_user.email }}" readonly />
+                    <label class="form-label" for="form6Example4">Email</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <textarea class="form-control" name="description" id="textAreaExample" rows="4">{{ current_user.description if current_user.description is not none}}</textarea>
+                    <label class="form-label" for="form6Example5">About</label>
+                </div>
+                {%if current_user.department is not none %}
+                <div class="form-group mb-4">
+                    <select class="form-control" name="department" title="Choose department">
+                        <option value="Human Resources" {{ 'selected' if current_user.department.lower() == 'Human Resources'.lower()}}>Human Resources</option>
+                        <option value="IT" {{ 'selected' if current_user.department.lower() == 'IT'.lower() }}>IT</option>
+                        <option value="Marketing" {{ 'selected' if current_user.department.lower() == 'Marketing'.lower()}}>Marketing</option>
+                    </select>
+                </div>
+                {% else %}
+                <div class="form-group mb-4">
+                    <select class="selectpicker" name="department" title="Choose department" data-width="75%">
+                        <option value="Human Resources" >Human Resources</option>
+                        <option value="IT" >IT</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <select class="selectpicker" multiple data-width="75%" name="hobbies" title="Choose hooby">
+                        {%for hobby in hobbies %}
+                            <option value="{{ hobby.id }}"
+                                {% for obj in user.hobbies %}
+                                    {% if obj.id == hobby.id %} selected {% endif %}
+                                {% endfor %}>
+                                {{ hobby.name }}
+                            </option>
+                        {%endfor%}
+                      </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mb-4 w-45">Submit</button>
+        </div>
+      
+    </form>
+</div>
+
+{% endblock %}
+
+[
+    {
+        id: 1
+
+    },
+    {
+        id: 2
+    }
+]

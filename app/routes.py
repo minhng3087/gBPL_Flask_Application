@@ -16,7 +16,6 @@ from app.helpers import *
 @app.route('/')
 def index():
     return {200: "OK"}
-
 @app.route('/home')
 def home():
     if current_user.is_authenticated:
@@ -68,13 +67,38 @@ def signup():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 @app.route('/profile')
 def profile():
     user = current_user
-    
+
     return render_template("profile.html", title="Profile", user=user)
+
+@app.route('/profile/edit', methods=['GET', 'POST'])
+def profile_edit():
+    if request.method == 'POST':
+        user_edit = User.query.get_or_404(current_user.id)
+        try:
+            user_edit.name = request.form['name']
+            user_edit.icon = request.form['icon']
+            user_edit.email = request.form['email']
+            user_edit.department = request.form['department']
+            user_edit.description = request.form['description']
+            user_edit.hobbies = Hobby.query.filter(Hobby.id.in_(request.form.getlist('hobbies'))).all()
+            db.session.add(user_edit)
+            db.session.commit()
+            return redirect(url_for('profile'))
+        except Exception:
+            db.session.rollback()
+            flash("Edit fail", 'danger')
+            return redirect(url_for('profile_edit'))
+
+    user = current_user
+    hobbies = Hobby.query.all()
+
+    print(user.hobbies[0].name)
+    return render_template("edit_profile.html", title="Profile Edit", user=user, hobbies=hobbies)
 
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
@@ -85,10 +109,7 @@ def search_users():
     if request.method == 'POST':
         search_word = request.form['query']
         search = "%{}%".format(search_word)
-        print(search)
         users = User.query.filter(User.name.like(search)).filter(User.id != current_user.id).all()
-        # print(users)
-    # return jsonify([user.selialize() for user in users])
     return render_template('components/user-home.html', users=[user.selialize() for user in users])
 
 from app.seeds import create_data

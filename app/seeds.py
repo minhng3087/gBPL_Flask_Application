@@ -12,8 +12,6 @@ def create_data():
         }
         
         User(data).save()
-        
-
 
     positive_review = [
         "",
@@ -60,5 +58,13 @@ def create_data():
         }
         Review(data).save()
 
-
-
+    hobbies = [
+        {"name": 'Football'},
+        {"name": 'Tennis'}, 
+        {"name": 'Basketball'}, 
+        {"name": 'Volleyball'}, 
+        {"name": 'Judo'}
+    ]
+    for hobby in hobbies:
+        print(hobby)
+        Hobby(hobby).save()
