@@ -1,108 +1,111 @@
 <html>
+
 <head>
-    {% if title %}
-      <title>{{ title }} - Chat</title>
-    {% else %}
-      <title>Chat</title>
-    {% endif %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/mdb.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-select.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+  {% if title %}
+  <title>{{ title }} - Chat</title>
+  {% else %}
+  <title>Chat</title>
+  {% endif %}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/mdb.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-select.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+  <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
 </head>
 
 <body>
-    <!-- Navbar -->
-    {% if not current_user.is_anonymous %}
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <!-- Container wrapper -->
-        <div class="container-fluid">
-            <!-- Toggle button -->
-            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
-                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
+  <!-- Navbar -->
+  {% if not current_user.is_anonymous %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
 
-            <!-- Collapsible wrapper -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <a class="navbar-brand mt-2 mt-lg-0" href="{{ url_for('home') }}">
-                <img
-                  src="{{ url_for('static',filename='images/GPBL_logo.jpg') }}"
-                  height="30"
-                  alt="GPL Logo"
-                  loading="lazy"
-                />
-              </a>
-            </div>
+      <!-- Collapsible wrapper -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <a class="navbar-brand mt-2 mt-lg-0" href="{{ url_for('home') }}">
+          <img src="{{ url_for('static',filename='images/GPBL_logo.jpg') }}" height="15" alt="GPL Logo"
+            loading="lazy" />
+        </a>
+        <!-- Left links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('home')  }}">Home</a>
+          </li>
+        </ul>
+        <!-- Left links -->
+      </div>
 
-            <div class="d-flex align-items-center">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item mr-2" style="margin-right: 10px;">
-                        <span>Welcome, {{ user.name }}</span>
-                    </li>
-                </ul>
-              </div>
-              <!-- Avatar -->
-              <div class="dropdown">
-                <a
-                  class="dropdown-toggle d-flex align-items-center hidden-arrow"
-                  href="#"
-                  id="navbarDropdownMenuAvatar"
-                  role="button"
-                  data-mdb-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <img
-                    src="{{ current_user.icon if current_user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
-                    class="rounded-circle"
-                    height="25"
-                    alt="Black and White Portrait of a Man"
-                    loading="lazy"
-                  />
-                </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="navbarDropdownMenuAvatar"
-                >
-                  <li>
-                    <a class="dropdown-item" href="{{ url_for('profile') }}">My profile</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{{ url_for('list_review') }}">Reviews</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <!-- Right elements -->
+      <div class="d-flex align-items-center">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-          </div>
-          <!-- Container wrapper -->
-        </nav>
-        {% endif %}
-        <!-- Navbar -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-              {% for category, message in messages %}
-              <div class="alert alert-{{ category }}" role="alert">
-                {{ message|capitalize }}
-              </div>
-              {% endfor %}
-        {% endif %}
-        {% endwith %}
-        {% block content %}
-        {% endblock %}
-       
-        <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
-        <script src= "{{ url_for('static',filename='js/mdb.min.js') }}"></script>
-        <script src= "{{ url_for('static',filename='js/custom.js') }}"></script>
-    </body>
+          <li class="nav-item mr-2" style="margin-right: 10px;">
+            <span>Welcome, {{ current_user.name }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button"
+          data-mdb-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-bell"></i>
+          <span class="badge rounded-pill badge-notification bg-danger">1</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+          {% for notice in notices %}
+          <li>
+            <a class="dropdown-item" href="{{ url_for('process_invite_chat', room=notice.room, content=notice.content, user=notice.from_id)}}">{{ notice.content }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!-- Avatar -->
+      <div class="dropdown">
+        <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar"
+          role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+          <img
+            src="{{ current_user.icon if current_user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
+            class="rounded-circle" height="25" alt="Black and White Portrait of a Man" loading="lazy" />
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+          <li>
+            <a class="dropdown-item" href="{{ url_for('profile') }}">My profile</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- Right elements -->
+
+    </div>
+    <!-- Container wrapper -->
+  </nav>
+  {% endif %}
+  <!-- Navbar -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    {{ message|capitalize }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+  {% block content %}
+  {% endblock %}
+>>>>>>> f0d92d2 (Chat)
+
+  <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/mdb.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/custom.js') }}"></script>
+</body>
 
 </html>

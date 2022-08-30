@@ -1,6 +1,4 @@
-from calendar import c
 from app.seeds import create_data
-from flask import jsonify
 from flask import request
 from flask import render_template
 from flask import redirect
@@ -8,31 +6,36 @@ from flask import flash
 from flask import url_for
 from flask import session
 from flask_login import current_user, login_user, logout_user
-from flask import session
-
+from flask_socketio import join_room, leave_room, emit
 from app.forms import *
-from app import app
+from app import app, socket_app
 from app.models import *
 from app.helpers import *
 
-from app import online_users
+from app.chat_helpers import *
+
+online_users = [User.query.filter(User.id==1).first()]
+online_users_sid = []
 
 @app.route('/')
 def index():
+    return redirect (url_for("login"))
     return {200: "OK"}
 @app.route('/home')
 def home():
     print("Online user: ",online_users)
     if current_user.is_authenticated:
-        users = User.query.filter(User.id != current_user.id).all()
+        users = User.query.filter(User.id != current_user.id).order_by(User.id).all()
         users_most_connect = the_most_setsuzoku_user(current_user.id)
         users_last_connect = last_setsuzoku_user(current_user.id)
-
+        notices = Notice.query.filter(Notice.to_id == current_user.id).order_by(Notice.id.desc()).limit(3).all()
+        print(notices)
         return render_template('home.html', title='Home', 
-                                user=current_user, users=users, 
+                                current_user=current_user, users=users, 
                                 users_most_connect=users_most_connect, 
                                 users_last_connect=users_last_connect,
-                                online_users=online_users
+                                online_users=online_users, 
+                                notices=notices
         )
     return redirect(url_for('login'))
 
@@ -67,10 +70,10 @@ def signup():
         }
         user = User(data)
         try:
-            db.session.add(user)
-            db.session.commit()
+            db.sessocket_appn.add(user)
+            db.sessocket_appn.commit()
         except Exception:
-            db.session.rollback()
+            db.sessocket_appn.rollback()
             flash("The email is existed. Please use another email.", 'danger')
             return redirect(url_for('signup'))
 
@@ -131,17 +134,111 @@ def search_users():
         users = User.query.filter(User.name.like(search)).filter(User.id != current_user.id).all()
     return render_template('components/user-home.html', users=[user.selialize() for user in users])
 
-@app.route("/chatroom/<int:to_id>", methods=['GET', 'POST'])
-def request_chat(to_id):
-    from_id = current_user.id
-    print(from_id, to_id)
-    return render_template("chat.html", title="Chat")
+# @app.route("/chatroom/<int:room_name>&&<int:to_id>", methods=['GET', 'POST'])
+@app.route("/chat", methods=['GET', 'POST'])
+def chat():
+    if request.args.get('room'):
+        session['room'] = request.args.get('room')
+        
+    print("DEF CHAT " + current_user.name + " have session below")
+    print(session)
+    return render_template("chat.html", title="Chat", session=session, current_user=current_user, to_user=request.args.get("user") )
 
+@app.route("/wait_room", methods=['GET', 'POST'])
+def request_chat():
+    print(request.method)
+    # session["room"] = request.args["room_name"]
+    if request.method == "POST":
+        
+        session['room'] = request.form['RoomName']
+        print("DEF REQUEST " + current_user.name + " have session below")
+        print(session)
+
+        data = {
+            "room": session['room'],
+            "from_id": current_user.id,
+            "to_id": request.form['ToUserID'],
+            "name": current_user.name,
+        }
+        Notice(data).save()
+    return render_template("wait_room.html", title="Wait Room", session=session)
+
+@app.route("/invite_room")
+def process_invite_chat():
+    user = request.args.get("user_id")
+    room = request.args.get("room")
+    content = request.args.get("content")
+    print(room)
+    return render_template("invite_chat.html", title= "Invite Room", room=room, content=content, user=user)
 
 ######################  CHAT  ####################################
 
+@socket_app.on('join', namespace='/chat')
+def join(message):
+    print("Call packet JOIN")
+    room = session.get('room')
+    join_room(room)
+    data = {
+        "type":"JOIN",
+        "from_user": current_user.name,
+        "msg": current_user.name + ' has entered the room.'
+    }
+    emit('status', data, room=room)
+   
 
 
+@socket_app.on('text', namespace='/chat')
+def text(message):
+    print("RECEIVE NEW MESS")
+    print(message)
+    room = session.get('room')
+    data = {
+        "type": "CHAT",
+        "from": current_user.name,
+        "msg": message['msg']
+    }
+    print(data)
+    emit('message', data, room=room)
+    
+
+
+@socket_app.on('left', namespace='/chat')
+def left(data):
+    room = session.get('room')
+    leave_room(room)
+    session.clear()
+    print(session)
+    data = {
+        "type": "LEFT",
+        'msg' : data['msg']
+    }
+    emit('status',data, room=room)
+
+@socket_app.on('refuse', namespace="/wait")
+def refuse(data):
+    data = {
+        'msg': "Your invitation refused"
+    }
+    emit('go_to_home', data, namespace="/wait",broadcast=True)
+
+    # emit('refuse')
+@socket_app.on('accept_invite', namespace="/wait")
+def accept(data):
+    print(data)
+    # session['room'] = data["room"]
+    # print("DEF ACCEPT " + current_user.name + " have session below")
+    # print(session)
+    # join_room(session['room'])
+    # data = {
+    #     "type":"JOIN",
+    #     "from_user": current_user.name,
+    #     "msg": current_user.name + ' has entered the room.'
+    # }
+    data = {
+        ''
+        'msg': "Your invitation accepted"
+    }
+    emit('go_to_chat', data, namespace="/wait",broadcast=True)
 
 ###########################################################
 from app.seeds import create_data
@@ -152,12 +249,14 @@ def seed_data():
 
 @app.route('/review', methods=["GET", "POST"])
 def review_result():
+    to_user = request.args.get("to_user")
+
     if request.method == "POST":
         data = {
             "content": request.form['user_review'],
             "score": request.form['score'],
             "fk_user_from": current_user.id,
-            "fk_user_to": 116,
+            "fk_user_to": to_user.id,
         }
         review = Review(data)
         try:

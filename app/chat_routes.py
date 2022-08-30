@@ -1,12 +1,7 @@
-# from app import socket_app
-# from flask_socketio import emit
+from app import socket_app
+from flask_socketio import join_room, leave_room, emit
 
-# @socket_app.on('online')
-# def online(data):
-#     emit('status_change', {'email': data['email'], 'status': 'online'}, broadcast=True)
+from flask import session
+from flask_login import current_user
 
-
-# @socket_app.on('offline')
-# def online(data):
-#     emit('status_change', {'username': data['email'], 'status': 'offline'}, broadcast=True)
 

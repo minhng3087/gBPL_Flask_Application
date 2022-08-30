@@ -121,6 +121,33 @@ class Hobby(db.Model):
         except Exception as e:
             db.session.rollback()
 
+
+class Notice(db.Model): 
+    __tablename__ = 'notices'
+    id = db.Column(db.Integer, primary_key=True)
+    from_id = db.Column(db.Integer, nullable=False)
+    to_id = db.Column(db.Integer, nullable=False)
+    room = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.String(256))
+
+    def __init__(self, data):
+        """
+        Class constructor
+        """
+        self.from_id = data.get('from_id')
+        self.to_id = data.get('to_id')
+        self.room = data.get('room')
+        self.content = data.get('name') + " invite you to Chat"
+
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+    
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
