@@ -1,7 +1,57 @@
-<h1>hello</h1>
-{{user.name}}
 
-<img src="{{ user.avatar(128) }}"
-{{user.email}}
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-100" style="background-color: #f4f5f7;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-6 mb-4 mb-lg-0">
+        <div class="card mb-3" style="border-radius: .5rem;">
+          <div class="row g-0">
+            <div class="col-md-4 gradient-custom text-center text-white"
+              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+              <img src="{{ current_user.icon if current_user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
+                alt="Avatar" class="img-fluid my-5 img-thumbnail" style="width: 80px;" />
+              <h5>{{ user.name }}</h5>
+              <p>{{ user.department if user.department is not none}}</p>
+              <a href="{{ url_for('profile_edit') }}" style="color: #fff">
+                <i class="far fa-edit mb-5"></i>
+              </a>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body p-4">
+                <h6>Information</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col mb-3">
+                    <h6>Email</h6>
+                    <p class="text-muted">{{ user.email }}</p>
+                  </div>
+                </div>
+                <h6>About</h6>
+                <hr class="mt-0 mb-2">
+                <div class="row pt-1">
+                  <div class="col-12 mb-3">
+                    <p class="text-muted">{{ user.description if user.description is not none }}</p>
+                  </div>
+                </div>
 
-<button type="button" href="#">Update Avatar</button>
+                <h6>Hobbies</h6>
+                <hr class="mt-0 mb-2">
+                <div class="row pt-1">
+                  <div class="col-12 mb-3">
+                    {% if user.hobbies %}
+                      {% for hobby in user.hobbies %}
+                        <p class="text-muted">{{ hobby.name }}</p>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
