@@ -33,7 +33,6 @@ def create_data():
 
     for i in range(40):
         from_id, to_id = random.sample(range(1, 12), 2)
-        print(from_id, to_id)
         score = random.choice(range(1,5))
         if score >=3:
             content = random.choice(positive_review)
@@ -66,5 +65,4 @@ def create_data():
         {"name": 'Judo'}
     ]
     for hobby in hobbies:
-        print(hobby)
         Hobby(hobby).save()

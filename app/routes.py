@@ -17,7 +17,6 @@ from app.helpers import *
 @app.route('/')
 def index():
     return {200: "OK"}
-
 @app.route('/home')
 def home():
     if current_user.is_authenticated:
@@ -73,7 +72,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-
 @app.route('/profile')
 def profile():
     user = current_user
@@ -123,15 +121,8 @@ def seed_data():
     create_data()
     return redirect('/')
 
-
 @app.route('/review', methods=["GET", "POST"])
 def review_result():
-
-    # form = ReviewForm()
-    # if form.validate_on_submit():
-    #     print("Hello")
-    #     review = form.userreview.data
-    #     print(review)
     if request.method == "POST":
         print(request.form['user_review'])
         print(request.form['score'])
@@ -144,5 +135,7 @@ def review_result():
 
         Review(data).save()
         return redirect(url_for('review_result'))
-    return render_template('review.html')
+
+    user = current_user
+    return render_template('review.html', user=user)
 

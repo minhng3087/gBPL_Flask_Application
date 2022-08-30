@@ -24,11 +24,6 @@ def the_most_setsuzoku_user(user_id):
         occurs[review.fk_user_to] += 1
     users = User.query.filter(User.id.in_(occurs.keys())).all()
     users = list(sorted(users, key=lambda x: occurs[x.id], reverse=True))
-    # select reviews.fk_user_to, count(*) from reviews
-    # where reviews.fk_user_from = 3
-    # group by reviews.fk_user_to
-    # order by count(*) DESC;
-    
     return [(user, occurs[user.id]) for user in users]
 
 def last_setsuzoku_user(user_id):
