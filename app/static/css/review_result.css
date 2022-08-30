@@ -1,0 +1,33 @@
+.auto-style1 {
+    font-size: 40px;
+    text-transform: uppercase;
+}
+
+.auto-style2 {
+    font-size: medium;
+}
+
+.auto-style3 {
+    background-color: #FFFF00;
+}
+
+.auto-style4 {
+    background-color: #53abbc;
+}
+
+textarea {
+    resize: none;
+    width: 406px;
+    height: 186px;
+}
+div.a {
+    text-align: center;
+}
+
+div.b {
+    text-align: left;
+}
+
+div.c {
+    text-align: right;
+}

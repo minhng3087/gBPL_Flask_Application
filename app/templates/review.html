@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Review screen</title>
+    <meta charset="utf-8">
+    <script type="text/javascript">
+
+
+        function FP_preloadImgs() {//v1.0
+            var d = document, a = arguments; if (!d.FP_imgs) d.FP_imgs = new Array();
+            for (var i = 0; i < a.length; i++) { d.FP_imgs[i] = new Image; d.FP_imgs[i].src = a[i]; }
+        }
+
+        function FP_swapImg() {//v1.0
+            var doc = document, args = arguments, elm, n; doc.$imgSwaps = new Array(); for (n = 2; n < args.length;
+                n += 2) {
+                elm = FP_getObjectByID(args[n]); if (elm) {
+                    doc.$imgSwaps[doc.$imgSwaps.length] = elm;
+                    elm.$src = elm.src; elm.src = args[n + 1];
+                }
+            }
+        }
+
+        function FP_getObjectByID(id, o) {//v1.0
+            var c, el, els, f, m, n; if (!o) o = document; if (o.getElementById) el = o.getElementById(id);
+            else if (o.layers) c = o.layers; else if (o.all) el = o.all[id]; if (el) return el;
+            if (o.id == id || o.name == id) return o; if (o.childNodes) c = o.childNodes; if (c)
+                for (n = 0; n < c.length; n++) { el = FP_getObjectByID(id, c[n]); if (el) return el; }
+            f = o.forms; if (f) for (n = 0; n < f.length; n++) {
+                els = f[n].elements;
+                for (m = 0; m < els.length; m++) { el = FP_getObjectByID(id, els[n]); if (el) return el; }
+            }
+            return null;
+        }
+    // -->
+    </script>
+    <style type="text/css">
+        .auto-style1 {
+            font-size: medium;
+            text-transform: uppercase;
+        }
+
+        .auto-style2 {
+            font-size: medium;
+        }
+
+        .auto-style3 {
+            background-color: #FFFF00;
+        }
+
+        .auto-style4 {
+            background-color: #53abbc;
+        }
+
+        textarea {
+            resize: none;
+            width: 406px;
+            height: 186px;
+        }
+    </style>
+</head>
+
+<img src="../static/images/GPBL_logo.jpg" alt="タイトル画像" title="タイトル" width="400px" height="100px">
+
+&nbsp;<div style="text-align: center">
+    <!--↑で中央ぞろえをする-->
+    <div>
+        <!--⇩ユーザ評価-->
+        <h1>User review</h1>
+        <!--⇩テキスト形式と数値によるレビューか数値によるレビュー-->
+        <p>Text review and numerical review or numerical review</p>
+
+        <button onclick="location.href='#script_review'" style="width: 213px; height: 57px">
+            <!--⇩テキスト形式と数値によるレビュー-->
+            <span class="auto-style1">Text review and numerical review</span></a></button>
+
+        <br><br>
+
+        <button onclick="location.href='#else_review'" style="width: 207px">
+            <!--⇩数値によるレビュー-->
+            <span class="auto-style2">numerical review</span></a>
+        </button>
+
+        <br><br>
+
+        <!--⇩文章レビュー項目-->
+        <form method="post">
+            <!--⇩こちらから入力してください-->
+        </form>
+    </div>
+
+    <body>
+            <div class="searchFrame">
+                <div class=”btn-area”>
+
+                   
+                       
+                            <!--⇩このユーザとの交流した気分を教えてください-->
+                            
+                            <a id="script_review">
+                            <br>
+                            </a>
+                            <p>How did you feel interacting with this user?</p>
+                            <form action="/review" method="POST">
+                                <label class="label"><span class="auto-style3">⇩Please enter here</span></label>
+                                <br>
+                                <br>
+                                <!--ここから文章入力レビューフォーム-->
+                                <textarea name="user_review"></textarea>
+                                <!--文章をリセット-->
+
+                                <br><br>
+                                <button onclick="ClearButton_Click()">reset text</button>
+                                <br><br>
+
+                                <label class="label"><span class="auto-style4">if you had written script
+                                        review.<br>please
+                                        check the point</span></label>
+                                <!--↑ここまで-->
+                                <div class=”item”>
+                                    <br>
+                                    <!--⇩こちらから数字を入力してください-->
+                                    <a id="else_review">Please enter the number here
+                                    </a><br>
+                                    <div class="suutiwookuru">
+                                        <label><input type="radio" name="score" value="4">4 point</label>
+                                        <br><br>
+                                        <label><input type="radio" name="score" value="3">3 point</label>
+                                        <br><br>
+                                        <label><input type="radio" name="score" value="2">2 point</label>
+                                        <br><br>
+                                        <label><input type="radio" name="score" value="1">1 point</label>
+
+                                    </div>
+
+                                    <br>
+                                    <!--レビュー内容を送信-->
+                                    <!--ここでレビューを送信し、ページを写る-->
+                                    
+                                    <button type="submit" class="btn btn-primary btn-lg">Review Kanryou</button><br>
+                                    <button><a href="{{ url_for('home')}}">Not write review</button>
+                                </div>
+
+                            </form>
+
+                            <!--評価をせずに終了-->
+
+                </div>
+            
+
+            </div>
+
+</html>

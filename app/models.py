@@ -28,7 +28,7 @@ class Review(db.Model):
         self.content = data.get('content')
         self.score = data.get("score")
         self.created_at = datetime.datetime.utcnow()
-    
+
     def save(self):
         try:
             db.session.add(self)
@@ -47,7 +47,7 @@ class User(UserMixin, db.Model):
     modified_at = db.Column(db.DateTime)
     user_to = db.relationship('Review',backref='to', primaryjoin=id==Review.fk_user_to)
     user_from = db.relationship('Review',backref='from', primaryjoin=id==Review.fk_user_from)
-    icon = db.Column(db.Text(4294000000))
+    icon = db.Column(db.Text())
     description = db.Column(db.Text())
     department = db.Column(db.String(128))
     hobbies = db.relationship('Hobby', secondary=user_hobby, backref='users')
@@ -121,5 +121,4 @@ class Hobby(db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
 

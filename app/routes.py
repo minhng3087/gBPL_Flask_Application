@@ -1,13 +1,14 @@
+from app.seeds import create_data
 from flask import jsonify
 from flask import request
 from flask import render_template
 from flask import redirect
 from flask import flash
 from flask import url_for
+from flask import session
 from flask_login import current_user, login_user, logout_user
 
-from app.forms import SignupForm
-from app.forms import LoginForm
+from app.forms import *
 from app import app
 from app.models import *
 from app.helpers import *
@@ -16,16 +17,18 @@ from app.helpers import *
 @app.route('/')
 def index():
     return {200: "OK"}
+
 @app.route('/home')
 def home():
     if current_user.is_authenticated:
         users = User.query.filter(User.id != current_user.id).all()
         users_most_connect = the_most_setsuzoku_user(current_user.id)
         users_last_connect = last_setsuzoku_user(current_user.id)
-        return render_template('home.html', title='Home', user=current_user, users=users, 
-        users_most_connect=users_most_connect, users_last_connect=users_last_connect)
+        return render_template('home.html', title='Home', user=current_user, users=users,
+                               users_most_connect=users_most_connect, users_last_connect=users_last_connect)
     else:
         return redirect(url_for('login'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -40,6 +43,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('home'))
     return render_template('login.html', title='Log In', form=form)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -63,11 +67,12 @@ def signup():
         return redirect(url_for('login'))
     return render_template('signup.html', title='Sign up', form=form)
 
- 
+
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 
 @app.route('/profile')
 def profile():
@@ -97,12 +102,12 @@ def profile_edit():
     user = current_user
     hobbies = Hobby.query.all()
 
-    print(user.hobbies[0].name)
     return render_template("edit_profile.html", title="Profile Edit", user=user, hobbies=hobbies)
 
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
     pass
+
 
 @app.route('/search/users', methods=["GET", "POST"])
 def search_users():
@@ -112,8 +117,32 @@ def search_users():
         users = User.query.filter(User.name.like(search)).filter(User.id != current_user.id).all()
     return render_template('components/user-home.html', users=[user.selialize() for user in users])
 
-from app.seeds import create_data
+
 @app.route("/seed")
 def seed_data():
     create_data()
     return redirect('/')
+
+
+@app.route('/review', methods=["GET", "POST"])
+def review_result():
+
+    # form = ReviewForm()
+    # if form.validate_on_submit():
+    #     print("Hello")
+    #     review = form.userreview.data
+    #     print(review)
+    if request.method == "POST":
+        print(request.form['user_review'])
+        print(request.form['score'])
+        data = {
+            "content": request.form['user_review'],
+            "score": request.form['score'],
+            "fk_user_from": current_user.id,
+            "fk_user_to": 2,
+        }
+
+        Review(data).save()
+        return redirect(url_for('review_result'))
+    return render_template('review.html')
+

@@ -1,9 +1,10 @@
 from collections import defaultdict
 import re
 import bcrypt
+
 from app.models import *
 import random
-from sqlalchemy import func
+from app import db
 
 def generate_hash(password):
     # return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
