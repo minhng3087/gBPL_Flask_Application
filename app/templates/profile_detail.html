@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-  <h1 class="p-4">My Profile</h1>
+  <h1 class="p-4">Profile Of {{ user.name }}</h1>
   <section class="vh-100">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center">
@@ -11,14 +11,14 @@
             <div class="row g-0">
               <div class="col-md-4 gradient-custom text-center text-white"
                 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-                <img src="{{ current_user.icon if current_user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
-                  alt="Avatar" class="img-fluid mt-5 my-3 img-thumbnail" style="width: 100px;" />
-                <h3>{{ current_user.name }}</h3>
-                <p class="fs-4">{{ current_user.department if current_user.department is not none}}</p>
-                <p class="fs-4">{{ average|string + ' point' if average is not none }} </p>
-                <a href="{{ url_for('profile_edit') }}" style="color: #fff">
-                  <i class="far fa-edit mb-5 fa-2x"></i>
-                </a>
+                <img src="{{ user.icon if user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
+                  alt="Avatar" class="img-fluid mt-5 mb-3 img-thumbnail" style="width: 100px;" />
+                <h3>{{ user.name }}</h3>
+                <p class="fs-4">{{ user.department if user.department is not none}}</p>
+                <p class="fs-4">{{ average|string + ' point' if average is not none }}</p>
+                <p class="fs-4">
+                    <a href="{{ url_for('list_review_member', name=user.name)}}" class="btn btn-primary">Reviews</a>
+                </p>
               </div>
               <div class="col-md-8">
                 <div class="card-body p-4">
@@ -27,14 +27,14 @@
                   <div class="row pt-1">
                     <div class="col mb-3">
                       <h6>Email</h6>
-                      <p class="text-muted">{{ current_user.email }}</p>
+                      <p class="text-muted">{{ user.email }}</p>
                     </div>
                   </div>
                   <h6>About</h6>
                   <hr class="mt-0 mb-2">
                   <div class="row pt-1">
                     <div class="col-12 mb-3">
-                      <p class="text-muted">{{ current_user.description if current_user.description is not none }}</p>
+                      <p class="text-muted">{{ user.description if user.description is not none }}</p>
                     </div>
                   </div>
   
@@ -42,8 +42,8 @@
                   <hr class="mt-0 mb-2">
                   <div class="row pt-1">
                     <div class="col-12 mb-3">
-                      {% if current_user.hobbies %}
-                        {% for hobby in current_user.hobbies %}
+                      {% if user.hobbies %}
+                        {% for hobby in user.hobbies %}
                           <p class="text-muted">{{ hobby.name }}</p>
                         {% endfor %}
                       {% endif %}

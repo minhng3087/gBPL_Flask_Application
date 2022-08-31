@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h1 class="p-4">Reviews</h1>
+        <div class="row">
+            {% for user in users_review %}
+                <div class="col-xl-4 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <img
+                                    src="{{ user.icon if user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
+                                    alt="avatar"
+                                    style="width: 45px; height: 45px"
+                                    class="rounded-circle"
+                                />
+                                <div class="ms-3">
+                                    <p class="fw-bold mb-1">{{ user.name }}</p>
+                                    <p class="text-muted mb-0">{{ user.email }}</p>
+                                </div>
+                                <div class="ms-auto">
+                                    <p class="fw-bold fs-5 text-info">{{ user.score }} point</p>
+                                </div>
+                            </div>
+                            <div class="card-text mt-2 fs-5 text-wrap">
+                                {{ user.content }}
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+</div>
+
+
+{% endblock %}

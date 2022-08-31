@@ -1,3 +1,4 @@
+from calendar import c
 from app.seeds import create_data
 from flask import jsonify
 from flask import request
@@ -12,7 +13,7 @@ from app.forms import *
 from app import app
 from app.models import *
 from app.helpers import *
-
+from sqlalchemy.sql import func
 
 @app.route('/')
 def index():
@@ -76,7 +77,12 @@ def logout():
 def profile():
     user = current_user
 
-    return render_template("profile.html", title="Profile", user=user)
+    average = Review.query.with_entities(func.avg(Review.score).label('score')).filter(Review.fk_user_to == current_user.id).scalar()
+
+    if average != None:
+        average = round(average)
+
+    return render_template("profile.html", title="Profile", user=user, average=average)
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
 def profile_edit():
@@ -124,18 +130,52 @@ def seed_data():
 @app.route('/review', methods=["GET", "POST"])
 def review_result():
     if request.method == "POST":
-        print(request.form['user_review'])
-        print(request.form['score'])
         data = {
             "content": request.form['user_review'],
             "score": request.form['score'],
             "fk_user_from": current_user.id,
-            "fk_user_to": 2,
+            "fk_user_to": 116,
         }
-
-        Review(data).save()
-        return redirect(url_for('review_result'))
+        review = Review(data)
+        try:
+            db.session.add(review)
+            db.session.commit()
+            return redirect(url_for('home'))
+        except Exception:
+            db.session.rollback()
+            flash("Edit fail", 'danger')
+            return redirect(url_for('review_result'))
 
     user = current_user
     return render_template('review.html', user=user)
 
+    
+@app.route('/list-review', methods=["GET"])
+def list_review():
+
+    users_review = User.query\
+    .filter(Review.fk_user_to == current_user.id)\
+    .join(Review, User.id==Review.fk_user_from)\
+    .add_columns(User.name, User.email, User.icon, Review.content, Review.score).all()
+    return render_template('list_review.html', user=current_user, users_review=users_review)
+
+@app.route('/profile/<name>')
+def profile_detail(name): 
+
+    user = User.query.filter(User.name==name).first()
+    average = Review.query.with_entities(func.avg(Review.score).label('score')).filter(Review.fk_user_to == user.id).scalar()
+
+    if average != None:
+        average = round(average)
+
+    return render_template("profile_detail.html", title="Profile", user=user, average=average)
+
+@app.route('/list-review/<name>', methods=["GET"])
+def list_review_member(name):
+    user = User.query.filter(User.name==name).first()
+
+    users_review = User.query\
+    .filter(Review.fk_user_to == user.id)\
+    .join(Review, User.id==Review.fk_user_from)\
+    .add_columns(User.name, User.email, User.icon, Review.content, Review.score).all()
+    return render_template('list_review.html', user=current_user, users_review=users_review)
