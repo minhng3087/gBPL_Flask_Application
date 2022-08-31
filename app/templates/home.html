@@ -31,18 +31,6 @@
                     Last connected users
                     </a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <a
-                        class="nav-link"
-                        id="ex3-tab-3"
-                        data-mdb-toggle="tab"
-                        href="#ex3-tabs-3"
-                        role="tab"
-                        aria-controls="ex3-tabs-3"
-                        aria-selected="false"
-                        >Another link</a
-                    >
-                </li>
             </ul>
             <div class="tab-content" id="ex2-content">
                 <div
@@ -111,34 +99,6 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div
-                  class="tab-pane fade"
-                  id="ex3-tabs-3"
-                  role="tabpanel"
-                  aria-labelledby="ex3-tab-3"
-                >
-                    <div class="list-group-item d-flex align-items-center">
-                        <p class="mb-0 d-flex">
-                        <img
-                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                            class="rounded-circle"
-                            height="40"
-                            alt="Black and White Portrait of a Man"
-                            loading="lazy"
-                        />
-                        <div class="d-flex flex-column ps-2">
-                            <div>
-                                Tab3
-                            </div>
-                        </div>
-                        <div class="ms-auto">
-                            <button class="btn btn-primary">
-                                Chat
-                            </button>
-                        </div>
-                        </p>
-                    </div>
-                </div>
               </div>
               <!-- Tabs content -->
         </div>
@@ -150,18 +110,19 @@
                 <div class="input-group md-form form-md form-2 pl-0">
                     <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search" id="search_text">
                     <div class="input-group-append">
-                      <span class="input-group-text lime lighten-2" id="basic-text1"><i class="fas fa-search text-grey"
-                          aria-hidden="true"></i></span>
+                        <span class="input-group-text lime lighten-2" id="basic-text1">
+                          <i class="fas fa-search text-grey" aria-hidden="true"></i>
+                        </span>
                     </div>
                 </div>
               <!-- Text -->
               <p class="card-text">
                 <div class="list-group-flush" id="result-search-user">
                     {% for user in users %}
-                    <div class="list-group-item d-flex align-items-center">
+                    <div class="list-group-item d-flex align-items-center change-page-profile" href="/profile/{{ user.name }}">
                       <p class="mb-0 d-flex">
                         <img
-                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            src="{{ user.icon if user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
                             class="rounded-circle"
                             height="40"
                             alt="Black and White Portrait of a Man"
@@ -192,7 +153,6 @@
 
 </div>
   <!-- Card -->
-<script src= "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         function load_data(query){

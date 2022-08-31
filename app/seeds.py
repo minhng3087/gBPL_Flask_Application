@@ -1,7 +1,6 @@
 import random
 from app.models import *
 
-
 def create_data():
     for i in range(10):
         data = {

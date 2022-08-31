@@ -1,21 +1,21 @@
 {% if users %}
 {% for user in users %}
-<div class="list-group-item d-flex align-items-center">
+<div class="list-group-item d-flex align-items-center change-page-profile" href="/profile/{{ user.name }}">
     <p class="mb-0 d-flex">
       <img
-          src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+          src="{{ user.icon if user.icon is not none else url_for('static', filename='images/avatar-default.png') }}"
           class="rounded-circle"
           height="40"
           alt="Black and White Portrait of a Man"
           loading="lazy"
       />
       <div class="d-flex flex-column ps-2">
-          <div>
-              {{ user.name }} || {{ user.email }}
-          </div>
-          <div>
-              descriptor
-          </div>
+        <div>
+            <span class="fs-6">{{ user.name }}</span> | <span class="fs-6">{{ user.email }}</span>
+        </div>
+        <div>
+            <span class="fs-6">{{ user.department if user.department is not none }}</span>
+        </div>
       </div>
       <div class="ms-auto">
           <button class="btn btn-primary">
@@ -26,3 +26,5 @@
   </div>
 {% endfor %}
 {% endif %}
+
+<script src= "{{ url_for('static',filename='js/custom.js') }}"></script>

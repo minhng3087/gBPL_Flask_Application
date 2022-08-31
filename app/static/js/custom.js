@@ -35,4 +35,7 @@ $(document).ready(function() {
 
     $('select').selectpicker();
 
+    $('.change-page-profile').click(function() {
+        window.location = $(this).attr('href');
+    });
 });

@@ -81,6 +81,9 @@ class User(UserMixin, db.Model):
         return {
             'name': self.name,
             'email': self.email,
+            'icon' : self.icon,
+            'department': self.department,
+            'description': self.description
         }
 
     @classmethod

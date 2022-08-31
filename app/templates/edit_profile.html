@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div class="container mt-4">
+    <h1 class="p-4">Edit Profile</h1>
     <form method="POST" action="{{ url_for('profile_edit') }}" enctype="multipart/form-data">
         <div class="row mb-4">
             <div class="col-3 d-flex justify-content-center align-items-center flex-column">
-                <!-- <img src="{{ url_for('static', filename='images/avatar-default.png') }}" class="rounded-circle" style="width: 150px;"
-                alt="Avatar" /> -->
                 <img id="avatar" src="{{ current_user.icon if current_user.icon is not none else url_for('static', filename='images/avatar-default.png') }}" class="rounded-circle" alt="avatar" style="width: 150px;">
                 <h6 class="mt-1">Upload a different photo...</h6>
                 <input type="text" id="image" name="icon" style="display:none;" value="{{ current_user.icon }}"></p>
@@ -39,7 +37,7 @@
                 <div class="form-group mb-4">
                     <select class="selectpicker" name="department" title="Choose department" data-width="75%">
                         <option value="Human Resources" >Human Resources</option>
-                        <option value="IT" >IT</option>
+                        <option value="IT">IT</option>
                         <option value="Marketing">Marketing</option>
                     </select>
                 </div>
@@ -55,7 +53,7 @@
                                 {{ hobby.name }}
                             </option>
                         {%endfor%}
-                      </select>
+                    </select>
                 </div>
             </div>
         </div>
@@ -68,13 +66,3 @@
 </div>
 
 {% endblock %}
-
-[
-    {
-        id: 1
-
-    },
-    {
-        id: 2
-    }
-]
