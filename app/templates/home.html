@@ -136,11 +136,28 @@
                                 <span class="fs-6">{{ user.department if user.department is not none }}</span>
                             </div>
                         </div>
+                        {% if user in online_users %}
                         <div class="ms-auto">
-                            <button class="btn btn-primary">
-                                Chat
+                                {% set room_name = range(1000, 2000) | random %}
+                            
+                                <form action="{{url_for('request_chat')}}" method="POST" >
+                                    <input type="text" value="{{ room_name }}" name="RoomName" hidden>
+                                    <input type="text" value="{{ user.id }}" name="ToUserID" hidden>
+                                    <button class="btn btn-primary" type="submit" >
+                                        Chat
+                                    </button>
+                                </form>
+                                
+                            
+                            
+                        </div>
+                        {% else %}
+                        <div class="ms-auto">
+                            <button class="btn btn-primary" style="background: rgb(169, 167, 175)">
+                                Not online
                             </button>
                         </div>
+                        {% endif %}
                       </p>
                     </div>
                     {% endfor %}
@@ -154,6 +171,7 @@
 </div>
   <!-- Card -->
 <script type="text/javascript">
+
     $(document).ready(function(){
         function load_data(query){
             $.ajax({
@@ -173,7 +191,8 @@
                 load_data('');
             }
         });
-    })
+    });
+    
 </script>
 
 {% endblock %}
