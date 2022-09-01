@@ -4,8 +4,9 @@ flask-sqlalchemy
 flask-migrate
 flask-login
 email_validator
+wheel
 bcrypt
-psycopg2
+psycopg2-binary
 python-dotenv
 flask-db
 flask-socketio

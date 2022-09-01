@@ -18,7 +18,7 @@
 <body>
   <!-- Navbar -->
   {% if not current_user.is_anonymous %}
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light">
     <!-- Container wrapper -->
     <div class="container-fluid">
       <!-- Toggle button -->
@@ -30,15 +30,10 @@
       <!-- Collapsible wrapper -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <a class="navbar-brand mt-2 mt-lg-0" href="{{ url_for('home') }}">
-          <img src="{{ url_for('static',filename='images/GPBL_logo.jpg') }}" height="15" alt="GPL Logo"
+          <img src="{{ url_for('static',filename='images/GPBL_logo.jpg') }}" height="30" alt="GPL Logo"
             loading="lazy" />
         </a>
         <!-- Left links -->
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('home')  }}">Home</a>
-          </li>
-        </ul>
         <!-- Left links -->
       </div>
 
@@ -54,14 +49,20 @@
         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button"
           data-mdb-toggle="dropdown" aria-expanded="false">
           <i class="fas fa-bell"></i>
-          <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          <span class="badge rounded-pill badge-notification bg-danger">{{ notices|length if notices|length > 0 }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+          {% if notices|length > 0 %}
           {% for notice in notices %}
           <li>
             <a class="dropdown-item" href="{{ url_for('process_invite_chat', room=notice.room, content=notice.content, user=notice.from_id)}}">{{ notice.content }}</a>
           </li>
           {% endfor %}
+          {% else %}
+          <li class="d-flex justify-content-center p-3">
+            <span class="fs-6">No notification</span>
+          </li>
+          {% endif %}
         </ul>
       </div>
       <!-- Avatar -->
@@ -75,6 +76,9 @@
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
           <li>
             <a class="dropdown-item" href="{{ url_for('profile') }}">My profile</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ url_for('list_review') }}">My reviews</a>
           </li>
           <li>
             <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
@@ -100,7 +104,6 @@
   {% endwith %}
   {% block content %}
   {% endblock %}
->>>>>>> f0d92d2 (Chat)
 
   <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>

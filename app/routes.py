@@ -11,10 +11,11 @@ from app.forms import *
 from app import app, socket_app
 from app.models import *
 from app.helpers import *
+from sqlalchemy.sql import func
 
 from app.chat_helpers import *
 
-online_users = [User.query.filter(User.id==1).first()]
+online_users = [User.query.filter(User.email=="mail0@gmail.com").first()]
 online_users_sid = []
 
 @app.route('/')
@@ -85,6 +86,7 @@ def signup():
 @app.route('/logout')
 def logout():
     global online_users 
+    print(online_users)
     online_users = [u for u in online_users if u.id != current_user.id]
     logout_user()
     session.clear()
@@ -140,9 +142,7 @@ def chat():
     if request.args.get('room'):
         session['room'] = request.args.get('room')
         
-    print("DEF CHAT " + current_user.name + " have session below")
-    print(session)
-    return render_template("chat.html", title="Chat", session=session, current_user=current_user, to_user=request.args.get("user") )
+    return render_template("chat.html", title="Chat", session=session, current_user=current_user, to_user=request.args.get("user"))
 
 @app.route("/wait_room", methods=['GET', 'POST'])
 def request_chat():
@@ -250,6 +250,7 @@ def seed_data():
 @app.route('/review', methods=["GET", "POST"])
 def review_result():
     to_user = request.args.get("to_user")
+    print(to_user)
 
     if request.method == "POST":
         data = {

@@ -2,11 +2,22 @@ import random
 from app.models import *
 
 def create_data():
+    hobbies = [
+        {"name": 'Football'},
+        {"name": 'Tennis'}, 
+        {"name": 'Basketball'}, 
+        {"name": 'Volleyball'}, 
+        {"name": 'Judo'}
+    ]
+    for hobby in hobbies:
+        Hobby(hobby).save()
+
     for i in range(10):
         data = {
             "name": f"user{i}",
             "email": f"mail{i}@gmail.com",
             "password": "1234" + str(i),
+
 
         }
         
@@ -30,8 +41,10 @@ def create_data():
         "私たちの見解は同じではありません"
     ]
 
+    users = User.query.all()
+    users_id = [ u.id for u in users]
     for i in range(40):
-        from_id, to_id = random.sample(range(1, 12), 2)
+        from_id, to_id = random.sample(users_id, 2)
         score = random.choice(range(1,5))
         if score >=3:
             content = random.choice(positive_review)
@@ -56,12 +69,4 @@ def create_data():
         }
         Review(data).save()
 
-    hobbies = [
-        {"name": 'Football'},
-        {"name": 'Tennis'}, 
-        {"name": 'Basketball'}, 
-        {"name": 'Volleyball'}, 
-        {"name": 'Judo'}
-    ]
-    for hobby in hobbies:
-        Hobby(hobby).save()
+    
